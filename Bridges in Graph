@@ -37,7 +37,7 @@ map<int,vector<int>> adjlist(int n,int e, vector<vector<int>>edges)
 
             low[src]=min(low[src],low[nbr]);
 
-            if(low[nbr]>low[src])
+            if(low[nbr]>tin[src])
             {
                 cout<<"Bridge exist between "<<src<<" to "<<nbr<<endl;
             }
