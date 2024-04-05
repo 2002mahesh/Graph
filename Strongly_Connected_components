@@ -1,0 +1,112 @@
+
+#include <iostream>
+#include<bits/stdc++.h>
+
+using namespace std;
+
+map<int,vector<int>> adjlist(int n,int e, vector<vector<int>>edges)
+{
+  map<int,vector<int>>adjList;
+
+  for(int i=0;i<e;i++)
+    {
+       adjList[edges[i][0]].push_back(edges[i][1]);
+      
+    }
+
+  return adjList;
+}
+  
+  void topo(int src,unordered_map<int,bool>&visited1,map<int,vector<int>>&adjList,stack<int>&s)
+  {
+    visited1[src]=true;
+    for(auto nbr:adjList[src])
+    {
+        if(!visited1[nbr])
+        {
+            
+            topo(nbr,visited1,adjList,s);
+        }
+    }
+    s.push(src);
+
+  }
+
+  void dfs(int src,map<int,vector<int>>&adjList,unordered_map<int,bool>&visited2)
+  {  
+    cout<<src<<",";
+       visited2[src]=true;
+    for(auto nbr:adjList[src])
+    {
+        if(!visited2[nbr])
+        {
+            
+            dfs(nbr,adjList,visited2);
+        }
+    }
+  }
+  int countSSC(int n,map<int,vector<int>>&adjList)
+  {
+    unordered_map<int,bool>visited1;
+    stack<int>s;
+    int cnt=0;
+     //topo Order
+    topo(0,visited1,adjList,s);
+
+    //reverse edges
+    map<int,vector<int>>newAdj;
+    for(auto t:adjList)
+    {
+        for(auto nbr:adjList[t.first])
+        {
+            newAdj[nbr].push_back(t.first);
+        }
+    }
+
+    //count the SSC
+      unordered_map<int,bool>visited2;
+      while(!s.empty())
+      {
+        int i=s.top();
+        s.pop();
+        if(!visited2[i])
+        {
+            cnt++;
+            cout<<"Printing OF Component: "<<cnt<<"->";
+            dfs(i,newAdj,visited2);
+            cout<<endl;
+        }
+      }
+        
+     return cnt;
+  }
+
+int main() {
+ int n;
+  cout<<"Enter the Number of nodes:";
+  cin>>n;
+
+  int e;
+  cout<<"Enter the Number of Edges:";
+  cin>>e;
+
+  vector<vector<int>>edges;
+
+  for(int i=0;i<e;i++)
+    {
+      int u,v;
+      cin>>u>>v;
+
+      edges.push_back({u,v});
+    }
+
+  map<int,vector<int>>adjList=adjlist(n,e,edges);
+
+    int count=countSSC(n,adjList);
+
+    cout<<"Number of Component:"<<count<<endl;
+  
+ 
+
+ 
+}
